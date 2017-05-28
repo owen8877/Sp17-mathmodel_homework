@@ -18,10 +18,18 @@ figureWidth = 3e4;
 figureHeight = 2e4;
 
 % draw background
-[X, Y, Z] = griddata(x, y, z, linspace(0, figureWidth)', linspace(0, figureHeight), 'v4');
+resolution = 1e2;
+[lonMesh, latMesh] = meshgrid(0:resolution:figureWidth, 0:resolution:figureHeight); 
+[X, Y, Z] = griddata(x, y, z, lonMesh, latMesh, 'v4');
+border = struct();
+convhullSelection = convhull(x, y);
+border.x = x(convhullSelection);
+border.y = y(convhullSelection);
+Z(~inpolygon(lonMesh, latMesh, border.x, border.y)) = NaN;
 
 contourf(X, Y, Z, 30);
-colormap(1-gray);
+% colormap(sqrt(1-gray));
+colormap(1 - gray);
 
 plots = ones(5);
 
