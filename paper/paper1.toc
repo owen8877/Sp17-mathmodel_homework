@@ -2,4 +2,5 @@
 \contentsline {part}{II\hspace {1em}重金属在不同区域的分布情况}{3}
 \contentsline {section}{\numberline {1}重金属的平面分布}{4}
 \contentsline {section}{\numberline {2}重金属的海拔分布}{4}
-\contentsline {section}{\numberline {3}不同区域重金属污染情况}{5}
+\contentsline {section}{\numberline {3}不同区域重金属污染情况}{6}
+\contentsline {part}{III\hspace {1em}重金属污染原因分析}{6}
