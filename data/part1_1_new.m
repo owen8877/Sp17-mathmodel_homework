@@ -5,5 +5,5 @@ station = data.station;
 draw_which = 2;
 
 displayData = station.cDensity(:, draw_which);
-
+% figure
 mapDisplay(displayData, ['Pollution of ' pollution.name{draw_which}]);
