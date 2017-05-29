@@ -19,13 +19,15 @@ function [] = mapDisplay(displayData, titleText)
     % draw background
     resolution = 1e2;
     [lonMesh, latMesh] = meshgrid(0:resolution:figureWidth, 0:resolution:figureHeight); 
-    [X, Y, Z] = griddata(x, y, z, lonMesh, latMesh, 'v4');
+    [X, Y, Z] = griddata(x, y, z, lonMesh, latMesh, 'natural');
     mapData = load('mapData.mat');
     Z(~mapData.innerArea) = NaN;
 
     contourf(X, Y, Z, 30);
     % colormap(sqrt(1-gray));
-    colormap(1 - gray);
+    % colormap(1 - gray);
+    colormap(jet);
+    colorbar;
 
     plots = ones(5);
 
@@ -40,6 +42,5 @@ function [] = mapDisplay(displayData, titleText)
 
     title(titleText)
     legend('Interpolated data', 'Living', 'Industry', 'Mountain', 'Traffic', 'Park');
-
 end
 

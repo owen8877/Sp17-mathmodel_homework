@@ -7,6 +7,7 @@ draw_which = 2;
 x = station.x;
 y = station.y;
 z = station.cDensity(:, draw_which);
+% z = station.height;
 
 markTable = ['o'; '+'; 'x'; '*'; 's'];
 colorTable = {'yellow'; 'cyan'; 'red'; 'green'; 'blue'};
@@ -28,6 +29,7 @@ border.y = y(convhullSelection);
 Z(~inpolygon(lonMesh, latMesh, border.x, border.y)) = NaN;
 
 contourf(X, Y, Z, 30);
+% surf(X, Y, Z);
 % colormap(sqrt(1-gray));
 colormap(1 - gray);
 
