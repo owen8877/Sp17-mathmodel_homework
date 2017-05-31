@@ -93,7 +93,7 @@ for workingFactorIndex = 1:pcaData.count
     peakCoordinates{workingFactorIndex} = coordinates(index(1:primaryStationNumber), :);
 end
 
-drawIndex = 3;
+drawIndex = 2;
 working = blockedData(:, :, drawIndex);
 
 figure
