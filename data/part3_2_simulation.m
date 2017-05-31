@@ -33,13 +33,15 @@ pollutionSpeed = 0.3;
 kai = 0.2;
 psai = 2e-3;
 
-% unpolluted = simulate(round, working, heightd2Matrix, 0.0, peakCoordinates{workingFactorIndex}, kai, 0.0);
+unpolluted = simulate(round, working, heightd2Matrix, 0.0, peakCoordinates{workingFactorIndex}, kai, 0.0);
 workingWithHeight = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, psai);
 working = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, 0.0);
 
 subplot(222);
-contourf(lonMesh, latMesh, heightData', 10);
+% contourf(lonMesh, latMesh, heightData', 10);
+contourf(lonMesh, latMesh, unpolluted', 10);
 colorbar;
+caxis([-2 2]);
 hold on;
 scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
 hold off;

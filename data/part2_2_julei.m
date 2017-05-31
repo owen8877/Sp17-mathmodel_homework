@@ -11,5 +11,5 @@ densityDistance = pdist(zDensity', 'euclidean');
 linkData = linkage(densityDistance, 'single');
 factorNumber = 5;
 
-dendrogram(linkData, 8);
+dendrogram(linkData, 8, 'Labels', pollution.name);
 clusterData = cluster(linkData, 'maxclust', factorNumber);

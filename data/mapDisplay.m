@@ -25,8 +25,8 @@ function [] = mapDisplay(displayData, titleText)
 
     contourf(X, Y, Z, 30);
     % colormap(sqrt(1-gray));
-    % colormap(1 - gray);
-    colormap(jet);
+    colormap(1 - gray);
+    % colormap(jet);
     colorbar;
 
     plots = ones(5);
