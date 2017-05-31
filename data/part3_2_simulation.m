@@ -13,8 +13,8 @@ load('3_1_output.mat');
 % blockedData, peakCoordinates, heightd2Matrix, heightData
 
 workingFactorIndex = 5;
-
 working = blockedData(:, :, workingFactorIndex);
+coordinates = peakCoordinates{workingFactorIndex};
 
 % working = working + 1 - min(min(working));
 
@@ -24,29 +24,41 @@ contourf(lonMesh, latMesh, working', 10);
 colorbar;
 colormap(parula);
 caxis([-2 2]);
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
 
 round = 100;
 pollutionSpeed = 0.3;
 kai = 0.2;
-psai = 1e-3;
+psai = 2e-3;
 
 % unpolluted = simulate(round, working, heightd2Matrix, 0.0, peakCoordinates{workingFactorIndex}, kai, 0.0);
-workingWithHeight = simulate(round, working, heightd2Matrix, pollutionSpeed, peakCoordinates{workingFactorIndex}, kai, psai);
-working = simulate(round, working, heightd2Matrix, pollutionSpeed, peakCoordinates{workingFactorIndex}, kai, 0.0);
+workingWithHeight = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, psai);
+working = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, 0.0);
 
 subplot(222);
 contourf(lonMesh, latMesh, heightData', 10);
 colorbar;
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
 
 subplot(223);
 contourf(lonMesh, latMesh, working', 10);
 colorbar;
 caxis([-2 2]);
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
 
 subplot(224);
 contourf(lonMesh, latMesh, workingWithHeight', 10);
 colorbar;
 caxis([-2 2]);
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
 
 % subplot(122);
 % contourf(lonMesh, latMesh, working', 10);
@@ -86,7 +98,7 @@ function result = simulate(round, working, heightd2Matrix, pollutionSpeed, coord
                     % use fallback d2
                     d2 = fallbackd2Matrix(i, j);
                 end
-                densityDifference(i, j) = kai * d2 + psai * heightd2Matrix(i, j);
+                densityDifference(i, j) = kai * d2 + psai * heightd2Matrix(i, j) * working(i, j);
             end
         end
 
