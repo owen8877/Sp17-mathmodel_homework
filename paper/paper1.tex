@@ -432,8 +432,15 @@ x=\nu+AF+\epsilon
 \begin{equation}
 \rho(r) = \frac{Q}{r}
 \end{equation}
-其中$Q$为待定常数。
-
+其中$Q$为待定常数。\\
+\indent 而对于一般情况，我们不仅要考虑上面的“热扩散”过程，还要把由地势造成的对扩散速率的影响考虑在内。
+事实上，地势对于重金属的扩散造成的影响，是由于地势影响了土壤中水流的流向，而水流的流向改变了重金属的扩散速率。
+因此我们应该在上述热方程中加入水流速率造成的影响这一修正项。
+从而我们得到如下重金属扩散应当满足的方程：
+\begin{equation}
+\frac{\partial \rho}{\partial t} + v_x\frac{\partial \rho}{\partial x} +v_y\frac{\partial \rho}{\partial y} + v_z\frac{\partial \rho}{\partial z}
+= \kappa_x\frac{\partial^2 \rho}{\partial }
+\end{equation}•
 \begin{equation}
 \frac{\partial \rho}{\partial t} = \kappa \Delta \rho + \tau \Delta u
 \end{equation}
