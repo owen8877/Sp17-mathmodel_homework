@@ -21,6 +21,27 @@ for i = 1:pcaData.count
     blockedData(:, :, i) = Z';
 end
 
+% for height data
+S = scatteredInterpolant(x, y, station.height, 'natural');
+Z = S(lonMesh, latMesh);
+Z(~mapData.innerArea) = NaN;
+heightData = Z';
+
+heightd2Matrix = heightData * NaN;
+for i = 2:size(heightData, 1)-1
+    for j = 2:size(heightData, 2)-1
+        if isnan(heightData(i, j))
+            continue
+        end
+
+        dx2 = heightData(i+1, j) + heightData(i-1, j) - 2*heightData(i, j);
+        dy2 = heightData(i, j+1) + heightData(i, j-1) - 2*heightData(i, j);
+        heightd2Matrix(i, j) = dx2 + dy2;
+    end    
+end
+heightd2Matrix = fillmissing(heightd2Matrix, 'nearest', 1);
+heightd2Matrix = fillmissing(heightd2Matrix, 'nearest', 2);
+
 % contourf(lonMesh, latMesh, blockedData(:, :, 2)', 10);
 % colorbar;
 
