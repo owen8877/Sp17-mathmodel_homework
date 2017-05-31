@@ -1,0 +1,30 @@
+\documentclass[a4paper]{article}
+\usepackage{geometry}
+\geometry{left=3.5cm,right=3.5cm,top=3.5cm,bottom=3.5cm}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{pdfpages}
+\usepackage{multirow}
+
+\begin{document}
+\part{3-1}
+First we use \emph{scatteredInterpolant()} in MATLAB to convert scattered data into grid data.
+\section{How to find max points}
+Select reasonable parameter $b$, so that we aim to find the points that are largest in its $b*b$ neighbourhood, so as to say
+$$ \rho_{i, j} \ge \rho_{i+k, j+l}, for \forall |k|, |l| \le b$$
+
+Have found such peak points, we have to measure their pollution rate. 
+Consider the pollution follows Gauss distribution; so the pollution it causes is related to its pollution density and the 2nd derivative.
+$$ pollution rate \quad proportion to \quad \rho^2 / \Delta \rho $$
+Take the first half contributions and we get the heavily-polluted origins.
+
+\section{simulation}
+the first equation is quite easy
+$$ = \Delta \rho * \kappa $$
+if we take the pollution into account
+$$ = \Delta \rho * \kappa + some pollution (use arbitrary alphabet) if (x, y) \in peakCoordinate $$
+if we take height into account
+$$ = \Delta \rho * \kappa + \Delta h * \tau * \rho + some pollution (use arbitrary alphabet) if (x, y) \in peakCoordinate $$
+$\tau$ is the parameter representing the speed term of water
+\end{document}

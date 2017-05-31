@@ -9,39 +9,63 @@ resolution = 1e2;
 
 [lonMesh, latMesh] = meshgrid(0:resolution:width, 0:resolution:height); 
 
-output31 = load('3_1_output.mat');
-blockedData = output31.blockedData;
-peakCoordinates = output31.peakCoordinates;
+load('3_1_output.mat');
+% blockedData, peakCoordinates, heightd2Matrix, heightData
 
 workingFactorIndex = 5;
-
 working = blockedData(:, :, workingFactorIndex);
+coordinates = peakCoordinates{workingFactorIndex};
 
 % working = working + 1 - min(min(working));
 
 figure
+subplot(221);
 contourf(lonMesh, latMesh, working', 10);
 colorbar;
+colormap(parula);
 caxis([-2 2]);
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
 
 round = 100;
 pollutionSpeed = 0.3;
 kai = 0.2;
-% kai = 1;
+psai = 2e-3;
 
-unpolluted = simulate(round, working, 0.0, peakCoordinates{workingFactorIndex}, kai);
-working = simulate(round, working, pollutionSpeed, peakCoordinates{workingFactorIndex}, kai);
+% unpolluted = simulate(round, working, heightd2Matrix, 0.0, peakCoordinates{workingFactorIndex}, kai, 0.0);
+workingWithHeight = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, psai);
+working = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, 0.0);
 
-figure
-contourf(lonMesh, latMesh, working' - unpolluted', 10);
+subplot(222);
+contourf(lonMesh, latMesh, heightData', 10);
 colorbar;
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
+
+subplot(223);
+contourf(lonMesh, latMesh, working', 10);
+colorbar;
+caxis([-2 2]);
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
+
+subplot(224);
+contourf(lonMesh, latMesh, workingWithHeight', 10);
+colorbar;
+caxis([-2 2]);
+hold on;
+scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+hold off;
 
 % subplot(122);
 % contourf(lonMesh, latMesh, working', 10);
 % colorbar;
 % caxis([-2 15]);
 
-function result = simulate(round, working, pollutionSpeed, coordinates, kai)
+function result = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, psai)
     % figure
     for r = 1:round
         % calculating 1st and 2nd derivative
@@ -74,7 +98,7 @@ function result = simulate(round, working, pollutionSpeed, coordinates, kai)
                     % use fallback d2
                     d2 = fallbackd2Matrix(i, j);
                 end
-                densityDifference(i, j) = kai * d2;
+                densityDifference(i, j) = kai * d2 + psai * heightd2Matrix(i, j) * working(i, j);
             end
         end
 
