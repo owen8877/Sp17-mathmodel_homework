@@ -93,17 +93,9 @@ for workingFactorIndex = 1:pcaData.count
     peakCoordinates{workingFactorIndex} = coordinates(index(1:primaryStationNumber), :);
 end
 
-% subplot(1, 2, 1);
-% % contourf(lonMesh, latMesh, derivate2Matrix' ./ derivative1Matrix', 10);
-% contourf(lonMesh, latMesh, derivative1Matrix', 10);
-% colorbar;
-% caxis([-100, 100]);
-% subplot(1, 2, 2);
-% contourf(lonMesh, latMesh, working', 10);
-% colorbar;
-% % caxis([-100, 100]);
+drawIndex = 3;
+working = blockedData(:, :, drawIndex);
 
-% very naive method
 figure
 hold on;
 contourf(lonMesh, latMesh, working', 10);
@@ -111,15 +103,10 @@ colorbar;
 scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution);
 hold off;
 
-% figure
 pollutionRate = zeros(size(coordinates, 1), 1);
 for i = 1:size(coordinates, 1)
     pollutionRate(i) = - working(coordinates(i, 1), coordinates(i, 2)) ^ 2 / derivative2Matrix(coordinates(i, 1), coordinates(i, 2));
 end
-% stem(pollutionRate);
-% yValue = mean(pollutionRate) + std(pollutionRate) * 2;
-% refline(0, yValue);
-% realPeak = coordinates(pollutionRate > yValue, :);
 
 [sortedPollutionRate, index] = sort(pollutionRate, 'descend');
 latentVector = cumsum(sortedPollutionRate) / sum(sortedPollutionRate);
@@ -127,10 +114,7 @@ cutoff = 0.50;
 primaryStationNumber = find(latentVector > cutoff, 1);
 realPeak = coordinates(index(1:primaryStationNumber), :);
 maxPeak = coordinates(index(1), :);
-% very naive method
-% figure
 hold on;
-% contourf(lonMesh, latMesh, working', 10);
 scatter(realPeak(:, 1) * resolution, realPeak(:, 2) * resolution, 'filled', 'y');
 scatter(maxPeak(1, 1) * resolution, maxPeak(1, 2) * resolution, 'filled', 'r');
 hold off;

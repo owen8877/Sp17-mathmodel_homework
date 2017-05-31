@@ -430,6 +430,7 @@ x=\nu+AF+\epsilon
 \end{equation}
 由于我们主要考虑的是土壤表层的重金属污染分布，所以上式实际上化为一个二元偏微分方程。
 我们以污染源为极点，将上述方程变换到极坐标系，得：
+% todo: remove
 \begin{equation}
 \frac{\partial \rho}{\partial t} = \kappa(\frac{\partial^2 \rho}{\partial r^2}+\frac{1}{r}\frac{\partial \rho}{\partial r})
 \end{equation}
@@ -447,14 +448,17 @@ x=\nu+AF+\epsilon
 \frac{\partial \rho}{\partial t} + v_x\frac{\partial \rho}{\partial x} +v_y\frac{\partial \rho}{\partial y} + v_z\frac{\partial \rho}{\partial z}
 = \kappa_x\frac{\partial^2 \rho}{\partial }
 \end{equation}
+% todo: fix formula
 \begin{equation}
 \frac{\partial \rho}{\partial t} = \kappa \Delta \rho + \tau \Delta u
 \end{equation}
 
+% todo: change sequence
 \section{重度污染区分析}
 当我们获得城市土壤重金属污染数据后，我们需要通过建立好的重金属传播模型来找到污染源的具体位置。\\
 \indent 为了解决这个问题，我们首先要对离散的数据进行网格化处理。
 这里我们使用了MATLAB中的\emph{scatteredInterpolant()}对已有的数据通过插值算法求出网格上的点的近似值。
+% todo: algorithm
 \subsection{污染源的确定}
 一般来说，污染源处的重金属含量应该是局部的最大值。因此，我们可以选择一个适当的半径b，找出所有的格点，使其在以半径为b的邻域内重金属的含量为最大值，即
 \begin{equation}
@@ -463,6 +467,7 @@ x=\nu+AF+\epsilon
 通过上述方法，我们可以找到污染源的可疑点。对于这些极大值点，我们认为只有前50\%是真正的污染源。经过模拟，我们得出了如下结论：
 \begin{figure}
     \includegraphics{pictures/polluted-source.eps}
+    % todo: which index
     \caption{污染源分布图}
     \label{fig:polluted-source}
 \end{figure}
