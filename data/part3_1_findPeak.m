@@ -45,6 +45,7 @@ heightd2Matrix = fillmissing(heightd2Matrix, 'constant', 0, 2);
 peakCoordinates = cell(pcaData.count, 1);
 
 workingFactorIndex = 5;
+needFigure = true;
 
 % to generate data, unblock the below
 for workingFactorIndex = 1:pcaData.count
@@ -93,24 +94,29 @@ for workingFactorIndex = 1:pcaData.count
     cutoff = 0.50;
     primaryStationNumber = find(latentVector > cutoff, 1);
     peakCoordinates{workingFactorIndex} = coordinates(index(1:primaryStationNumber), :);
-end
+    
+    if ~needFigure
+        continue
+    end
+    
+    figure
+    title(['Peak points of factor ' int2str(workingFactorIndex)])
+    hold on;
+    contourf(lonMesh, latMesh, working', 10);
+    colorbar;
+    scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution);
+    hold off;
 
-figure
-hold on;
-contourf(lonMesh, latMesh, working', 10);
-colorbar;
-scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution);
-hold off;
-
-realPeak = coordinates(index(1:primaryStationNumber), :);
-maxPeak = coordinates(index(1), :);
-hold on;
-scatter(realPeak(:, 1) * resolution, realPeak(:, 2) * resolution, 'filled', 'y');
-scatter(maxPeak(1, 1) * resolution, maxPeak(1, 2) * resolution, 'filled', 'r');
-for i = 1:length(coordinates)
-   text(coordinates(i, 1) * resolution, coordinates(i, 2) * resolution, num2str(pollutionRate(i)));
+    realPeak = coordinates(index(1:primaryStationNumber), :);
+    maxPeak = coordinates(index(1), :);
+    hold on;
+    scatter(realPeak(:, 1) * resolution, realPeak(:, 2) * resolution, 'filled', 'y');
+    scatter(maxPeak(1, 1) * resolution, maxPeak(1, 2) * resolution, 'filled', 'r');
+%     for i = 1:length(coordinates)
+%        text(coordinates(i, 1) * resolution, coordinates(i, 2) * resolution, num2str(pollutionRate(i)));
+%     end
+    hold off;
 end
-hold off;
 
 % output: 3_1_output.mat
 % blockedData, heightData, heightd2Matrix, peakCoordinates
