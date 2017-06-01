@@ -10,8 +10,12 @@ station = data.station;
 % title('Box graph of pollution density')
 
 zDensity = ones(319, 8);
+meanVector = ones(1, 8);
+stdVector = ones(1, 8);
 for i = 1:8
     zDensity(:, i) = zscore(station.density(:, i));
+    meanVector(i) = mean(station.density(:, i));
+    stdVector(i) = std(station.density(:, i));
 end
 
 % [Loadings, specificVar, T, stats] = factoran(zDensity, 3, 'rotate', 'none');
@@ -30,8 +34,8 @@ factorNumber = find((cumsum(latent)./sum(latent)) > cutoff, 1);
 % biplot(coeff(:, 1:3), 'scores', score(:, 1:3), 'varlabels', pollution.name);
 % title('PCA on pollution density-3D')
 
-rotatedCoeff = rotatefactors(coeff(:, 1:factorNumber));
-restore = score * rotatedCoeff;
+[rotatedCoeff, T] = rotatefactors(coeff(:, 1:factorNumber));
+rotatedFactorScore = score(:, 1:factorNumber) * T;
 
 varName = cell(factorNumber, 1);
 for i = 1:factorNumber
@@ -55,10 +59,7 @@ end
 covariance = zeros(factorNumber, 5);
 for i = 1:factorNumber
     for j = 1:5 % function Types
-%         fVector = zeros(station.count, 1);
-%         fVector(station.function == j) = 1;
-%         cMatrix = corrcoef(restore(:, i), fVector);
-        cMatrix = corrcoef(restore(:, i), functionPercent(:, j));
+        cMatrix = corrcoef(rotatedFactorScore(:, i), functionPercent(:, j));
         covariance(i, j) = cMatrix(1, 2);
     end
 end
@@ -66,3 +67,6 @@ end
 disp(covariance)
 % stem(countttt)
 % mapDisplay(restore(:, 3), 'Blabla');
+
+% output: pcaData.mat
+% count, score <= rotatedFactorScore, rotatedCoeff, meanVector, stdVector
