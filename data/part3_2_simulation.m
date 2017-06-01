@@ -12,63 +12,86 @@ resolution = 1e2;
 load('3_1_output.mat');
 % blockedData, peakCoordinates, heightd2Matrix, heightData
 
-workingFactorIndex = 5;
-working = blockedData(:, :, workingFactorIndex);
-coordinates = peakCoordinates{workingFactorIndex};
+workingFactorIndex = 3;
 
-% working = working + 1 - min(min(working));
+factorOutput = cell(5, 1);
 
-figure
-subplot(221);
-contourf(lonMesh, latMesh, working', 10);
-colorbar;
-colormap(parula);
-caxis([-2 2]);
-hold on;
-scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
-hold off;
+% for workingFactorIndex = 1:5
+    working = blockedData(:, :, workingFactorIndex);
+    coordinates = peakCoordinates{workingFactorIndex};
 
-round = 100;
-pollutionSpeed = 0.3;
-kai = 0.2;
-psai = 2e-3;
+    round = 50;
+    pollutionSpeed = 0.3;
+    kai = 0.2;
+    psai = 2e-3;
 
-unpolluted = simulate(round, working, heightd2Matrix, 0.0, peakCoordinates{workingFactorIndex}, kai, 0.0);
-workingWithHeight = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, psai);
-working = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, 0.0);
+    unpolluted = simulate(round, working, heightd2Matrix, ...
+        0.0, peakCoordinates{workingFactorIndex}, kai, 0.0, 6, ...
+        workingFactorIndex, lonMesh, latMesh);
+    workingWithHeight = simulate(round, working, heightd2Matrix, ...
+        pollutionSpeed, coordinates, kai, psai, 0, ...
+        workingFactorIndex, lonMesh, latMesh);
+    workingWithoutHeight = simulate(round, working, heightd2Matrix, ...
+        pollutionSpeed, coordinates, kai, 0.0, 0, ...
+        workingFactorIndex, lonMesh, latMesh);
 
-subplot(222);
-% contourf(lonMesh, latMesh, heightData', 10);
-contourf(lonMesh, latMesh, unpolluted', 10);
-colorbar;
-caxis([-2 2]);
-hold on;
-scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
-hold off;
+    factorOutput{workingFactorIndex} = workingWithHeight;
+    
+    figure;
+    suptitle({['factor' int2str(workingFactorIndex)], ''});
+    subplot(221);
+    contourf(lonMesh, latMesh, working', 10);
+    colorbar;
+    colormap(parula);
+    caxis([-2 2]);
+    hold on;
+    scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+    hold off;
+    title('original');
+    
+    subplot(222);
+    contourf(lonMesh, latMesh, unpolluted', 10);
+    % colorbar;
+    caxis([-2 2]);
+    hold on;
+    scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+    hold off;
+    title('unpolluted');
 
-subplot(223);
-contourf(lonMesh, latMesh, working', 10);
-colorbar;
-caxis([-2 2]);
-hold on;
-scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
-hold off;
+    subplot(223);
+    contourf(lonMesh, latMesh, workingWithoutHeight', 10);
+    % colorbar;
+    caxis([-2 2]);
+    hold on;
+    scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+    hold off;
+    title('without height');
 
-subplot(224);
-contourf(lonMesh, latMesh, workingWithHeight', 10);
-colorbar;
-caxis([-2 2]);
-hold on;
-scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
-hold off;
+    subplot(224);
+    contourf(lonMesh, latMesh, workingWithHeight', 10);
+    % colorbar;
+    caxis([-2 2]);
+    hold on;
+    scatter(coordinates(:, 1) * resolution, coordinates(:, 2) * resolution, 'y');
+    hold off;
+    title('with height');
+% end
 
-% subplot(122);
-% contourf(lonMesh, latMesh, working', 10);
-% colorbar;
-% caxis([-2 15]);
+function result = simulate(round, working, heightd2Matrix, pollutionSpeed, ...
+    coordinates, kai, psai, subplotNumber, workingFactorIndex, lonMesh, latMesh)
+    needFigure = subplotNumber ~= 0;
 
-function result = simulate(round, working, heightd2Matrix, pollutionSpeed, coordinates, kai, psai)
-    % figure
+    if needFigure
+        figure;
+        rowPlot = fix(sqrt(subplotNumber));
+        columnPlot = fix(ceil(subplotNumber / rowPlot));
+        titleText = ['Simulation on factor ' int2str(workingFactorIndex) ...
+            ' ; pollutionSpeed ' num2str(pollutionSpeed) ...
+            ' ; psai ' num2str(psai)];
+        suptitle({titleText, ''});
+        drawStep = fix(ceil(round / (rowPlot * columnPlot)));
+    end
+    
     for r = 1:round
         % calculating 1st and 2nd derivative
         derivative2Matrix = working * NaN;
@@ -86,8 +109,8 @@ function result = simulate(round, working, heightd2Matrix, pollutionSpeed, coord
 
         % calculating differential
         densityDifference = working * NaN;
-        fallbackd2Matrix = fillmissing(derivative2Matrix, 'nearest', 1);
-        fallbackd2Matrix = fillmissing(fallbackd2Matrix, 'nearest', 2);
+        fallbackd2Matrix = fillmissing(derivative2Matrix, 'constant', 0, 1);
+        fallbackd2Matrix = fillmissing(fallbackd2Matrix, 'constant', 0, 2);
         for i = 2:size(working, 1)-1
             for j = 2:size(working, 2)-1
                 if isnan(working(i, j))
@@ -113,21 +136,14 @@ function result = simulate(round, working, heightd2Matrix, pollutionSpeed, coord
 
         working = working + densityDifference;
 
-        if mod(r, 10) ~= 0
+        if ~needFigure || mod(r, drawStep) ~= 0
             continue
         end
 
-        % subplot(3, 4, r / 10 + 1);
-        % subplot(3, 4, r + 1);
-        % contourf(lonMesh(120:125, 240:245), latMesh(120:125, 240:245), working(240:245, 120:125)', 25);
-        % contourf(lonMesh, latMesh, working', 10);
-        % colorbar;
-        % caxis([-2 2]);
-    %     title(['after ' int2str(r) ' round'])
-    %     disp(['round ' int2str(r)])
-    %     disp(working(10:20, 25:35)')
-    %     disp(densityDifference(10:20, 25:35)')
-
+        subplot(rowPlot, columnPlot, r / drawStep);
+        contourf(lonMesh, latMesh, working', 10);
+        caxis([-2 2]);
+        title(['after ' int2str(r) ' round'])
     end
     result = working;
 end
