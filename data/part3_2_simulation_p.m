@@ -27,7 +27,7 @@ else
     picsNumber = 0;
 end
 
-simulationResult = cell(pollution.count, 1);
+simulationResult = cell(pollution.count, 5);
 
 for workingFactorIndex = 1:8
     working = blockedData(:, :, workingFactorIndex);
@@ -38,6 +38,9 @@ for workingFactorIndex = 1:8
     unpolluted = simulate(round, working, heightd2Matrix, ...
         0.0, 0.0, coordinates, ...
         kai, 0.0, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'unpolluted');
+    unpollutedWithHeight = simulate(round, working, heightd2Matrix, ...
+        0.0, 0.0, coordinates, ...
+        kai, psai, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'unpollutedWithHeight');
     workingWithoutHeight = simulate(round, working, heightd2Matrix, ...
         pollutionSpeed, pollutionBaseLine(workingFactorIndex), coordinates, ...
         kai, 0.0, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'withoutHeight');
@@ -45,7 +48,11 @@ for workingFactorIndex = 1:8
         pollutionSpeed, pollutionBaseLine(workingFactorIndex), coordinates, ...
         kai, psai, picsNumber, workingFactorIndex, lonMesh, latMesh, cMax, 'wihtHeight');
 
-    simulationResult{workingFactorIndex} = workingWithHeight;
+    simulationResult{workingFactorIndex}{1} = working;
+    simulationResult{workingFactorIndex}{2} = unpolluted;
+    simulationResult{workingFactorIndex}{3} = unpollutedWithHeight;
+    simulationResult{workingFactorIndex}{4} = workingWithoutHeight;
+    simulationResult{workingFactorIndex}{5} = workingWithHeight;
     
     figure;
     suptitle({pollution.name{workingFactorIndex}, ''});
