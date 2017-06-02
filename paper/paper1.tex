@@ -1,3 +1,4 @@
+% !TeX spellcheck = <none>
 \documentclass[a4paper]{article}
 \usepackage{geometry}
 \geometry{left=3.5cm,right=3.5cm,top=3.5cm,bottom=3.5cm}
@@ -8,6 +9,8 @@
 \usepackage{multirow}
 \usepackage{float}
 
+\usepackage[citestyle=alphabetic, bibstyle=alphabetic, backend=bibtex]{biblatex}
+\addbibresource{ref.bib}
 
 \usepackage{xeCJK}
 \setmainfont{Times New Roman}
@@ -635,6 +638,42 @@ x=\nu+AF+\epsilon
 在前面的建模过程中，我们仅仅只考虑了土壤和地势对于重金属传播的影响，而没有考虑水体以及空气的因素。
 \section{重金属降解模型}
 \section{重金属水体传播模型}
+这里首先要明确，我们所关注的水体并非完全“清澈”的纯净水体，而是在一般城市中较为常见的含泥沙的复杂水体。
+在这种水体中，起主导作用的重金属依存方式是吸附在泥沙上而不是仅仅溶解在水溶液中，因此我们研究的重点是含泥沙的悬浊液中重金属浓度的传播模式。
+参考 \cite{hsl:515} 对于水中重金属浓度的分析，我们可以建立起重金属的水体传播模型。
+\subsection{一些假定}
+为了简化模型的复杂程度，我们做出如下假设：
+\begin{itemize}
+	\item 在整个水深范围内, 浓度分布由三部分组成：上部是悬移质泥沙和水流运动空间，中间部分是推移质泥沙和水流运动空间，下部是河床冲淤变形的区域。
+	\item 河床变形区域内孔隙水相对整个断面也较小，因此忽略其中的重金属，同时忽略生物化学作用传质，不考虑生物体对重金属的富集。
+	\item 在河流的宽度方向上重金属浓度保持不变；这是考虑到我们关注的浓度变化存在于河流的流动方向上（一般长度在 $10^3$ 米左右），而相比于此河流的宽度（一般在 $10^1$ 米左右）可以忽略不计，因此浓度在宽度方向上是相同的。
+	\item 对于颗粒相浓度的变化（悬浮质颗粒相、推移质颗粒相和床沙质颗粒相重金属污染物浓度），吸附-解吸是其生物-化学反应的主要机理。
+\end{itemize}
+\subsection{方程的建立}
+考虑在在 $dt$ 时间内， $dl$ 长的一段内重金属的变化量：
+\[ \begin{split}
+&\frac{\partial}{\partial t}\left[c\left(h_1\left(1-\frac{s_s}{\rho_s}\right) + h_2\left(1-\frac{s_b}{\rho_s}\right)\right)Hdl\right]dt \\
++ &\frac{\partial}{\partial t}(s_sN_sh_1Hdl)dt \\
++ &\frac{\partial}{\partial t}(s_bN_bh_2Hdl)dt \\
++ &\frac{\partial}{\partial t}(N_m(1-p^{'})Hdl)dt 
+\end{split} \]
+最后一项是床沙质泥沙上重金属量的变化。
+
+同时考虑在 $dt$ 时间内，因为水的流动而造成的河流 $dl$ 长的一段内水相、悬浮颗粒相、推移颗粒相的增加量：
+\begin{itemize}
+	\item 水相
+		$$ -\frac{\partial}{\partial l}\left[uh_1cH\left(1-\frac{s_s}{\rho_s}\right)\right]dldt -\frac{\partial}{\partial l}\left[w_xh_2cH\left(1-\frac{s_b}{\rho_s}\right)\right]dldt $$
+	\item 悬浮颗粒相
+		$$ -\frac{\partial}{\partial l}(us_sN_sh_1H)dldt $$
+	\item 推移颗粒相
+		$$ -\frac{\partial}{\partial l}(w_xs_bN_bh_2H)dldt $$
+\end{itemize}
+
+由于质量守恒，上述的两组效应应该达到精确的平衡。
+考虑在大多数冲积河流中，推移质泥沙运动一般较小，可以忽略。
+此时有 $h_2 = 0$ 和 $h = h_1$；因此化简得到
+$$ \frac{\partial c}{\partial t} + u\frac{\partial c}{\partial l} + \frac{1}{h} \frac{\partial}{\partial l}\left(h E_l \frac{\partial c}{\partial l}\right) = N_s \frac{\rho^{'}}{h} \frac{\partial h_3}{\partial t} - \frac{1 - p^{'}}{h}\frac{\partial N_m}{\partial t} - \left[ s_s\frac{\partial N_s}{\partial t} + s_s u \frac{\partial N_s}{\partial l} -E_l^s\frac{\partial s_s}{\partial l}\frac{\partial N_s}{\partial l} \right]$$
+
 \section{重金属空气传播模型}
 
 
@@ -696,4 +735,5 @@ x=\nu+AF+\epsilon
 
 
 
+\printbibliography
 \end{document}
