@@ -11,7 +11,7 @@ resolution = 1e2;
 load('3_1_p_output.mat');
 % blockedData, peakCoordinates, heightd2Matrix, heightData
 
-workingFactorIndex = 1;
+workingFactorIndex = 2;
 
 round = 365;
 pollutionSpeed = 3e-2;
@@ -29,7 +29,7 @@ end
 
 simulationResult = cell(pollution.count, 5);
 
-for workingFactorIndex = 1:8
+% for workingFactorIndex = 1:8
     working = blockedData(:, :, workingFactorIndex);
     coordinates = peakCoordinates{workingFactorIndex};
 
@@ -37,16 +37,16 @@ for workingFactorIndex = 1:8
     
     unpolluted = simulate(round, working, heightd2Matrix, ...
         0.0, 0.0, coordinates, ...
-        kai, 0.0, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'unpolluted');
+        kai, 0.0, picsNumber, workingFactorIndex, lonMesh, latMesh, cMax, 'unpolluted');
     unpollutedWithHeight = simulate(round, working, heightd2Matrix, ...
         0.0, 0.0, coordinates, ...
         kai, psai, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'unpollutedWithHeight');
     workingWithoutHeight = simulate(round, working, heightd2Matrix, ...
         pollutionSpeed, pollutionBaseLine(workingFactorIndex), coordinates, ...
-        kai, 0.0, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'withoutHeight');
+        kai, 0.0, picsNumber, workingFactorIndex, lonMesh, latMesh, cMax, 'withoutHeight');
     workingWithHeight = simulate(round, working, heightd2Matrix, ...
         pollutionSpeed, pollutionBaseLine(workingFactorIndex), coordinates, ...
-        kai, psai, picsNumber, workingFactorIndex, lonMesh, latMesh, cMax, 'wihtHeight');
+        kai, psai, 0, workingFactorIndex, lonMesh, latMesh, cMax, 'wihtHeight');
 
     simulationResult{workingFactorIndex}{1} = working;
     simulationResult{workingFactorIndex}{2} = unpolluted;
@@ -117,7 +117,7 @@ for workingFactorIndex = 1:8
     end
     hold off;
     title('with height');
-end
+% end
 
 function result = simulate(round, working, heightd2Matrix, pollutionSpeed, ...
     pollutionBaseLine, coordinates, kai, psai, subplotNumber, ...

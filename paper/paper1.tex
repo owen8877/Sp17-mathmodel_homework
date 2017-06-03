@@ -444,9 +444,9 @@ x=\nu+AF+\epsilon
 \section{模型的聚类分析}
 为了进一步验证因子分析的合理性，可以使用聚类分析来验证因子分析的结果。
 聚类分析是通过使用一种相似性度量来比较不同数据之间的距离，并将距离相近的数据归为一类，最终将数据划分成几类的分析方法。
-我们这里使用MATLAB中的clusterdata函数来做聚类分析。
-我们对 8 重金属元素进行聚类分析，得到如图\ref{fig:cluster}的系统树：
-\begin{figure}
+我们这里使用MATLAB中的clusterdata函数来做聚类分析。 \\
+\indent 我们对 8 重金属元素进行聚类分析，得到如图\ref{fig:cluster}的系统树：
+\begin{figure}[H]
     \includegraphics[width=0.6\textwidth,bb=80 420 500 720]{pictures/cluster.eps}
     \caption{8种重金属聚类分析结果}
     \label{fig:cluster}
@@ -529,11 +529,6 @@ x=\nu+AF+\epsilon
 \begin{equation}
 \frac{\partial \rho}{\partial t} = \kappa(\frac{\partial^2 \rho}{\partial r^2}+\frac{1}{r}\frac{\partial \rho}{\partial r})
 \end{equation}
-当扩散过程达到稳态时，有$\frac{\partial \rho}{\partial t} = 0$,此时可以求出解析解为：
-\begin{equation}
-\rho(r) = \frac{Q}{r}
-\end{equation}
-其中$Q$为待定常数。\\
 
 \indent 而对于一般情况，我们不仅要考虑上面的“热扩散”过程，还要把由地势造成的对扩散速率的影响考虑在内。
 地势对于重金属的扩散造成的影响,其实是在重力作用下，重金属向低处的扩散速率会大于向高处的扩散速率。
@@ -549,7 +544,8 @@ x=\nu+AF+\epsilon
 \begin{equation}
 \frac{\partial \rho}{\partial t} = \kappa \Delta \rho + \tau \Delta h *\rho
 \end{equation}
-上面的模型都是对于污染源不在产生新的重金属而言的。而对于不断产生新污染的情形，则我们还要再加上一个修正项重金属产生速率$\beta$,所以对于污染源，原方程修正为：
+\indent 进一步的，上面的模型都是对于污染源不在产生新的重金属而言的。
+而对于不断产生新污染的情形，则我们还要再加上一个修正项重金属产生速率$\beta$,所以对于污染源，原方程修正为：
 \begin{equation}
 \label{eqn_model}
 \frac{\partial \rho}{\partial t} = \kappa \Delta \rho + \tau \Delta h *\rho + \beta
@@ -559,7 +555,7 @@ x=\nu+AF+\epsilon
 对于我们所测得的离散数据，我们去要对上述公式做离散化处理。
 对于$\delta \rho $,在离散的数据中，我们用数据的二阶差分来表示它，即：
 \begin{equation}
-\Delta \rho= \rho_{i+1}+\rho{i-1}-2\rho_i
+\Delta \rho= \rho_{i+1}+\rho_{i-1}-2\rho_i
 \end{equation}
 在下面的数值模拟过程中，通过具体的数据，我们也会比较我们所加的修正项对于最终传播结果造成的影响。
 
@@ -573,10 +569,20 @@ x=\nu+AF+\epsilon
 也就是说，经过治理，原先的污染源不在产生新的重金属。此时，原本在污染源附近的重金属含量较高的地区仍然会向周围扩散。
 此时我们先考虑这些重金属的扩散为各向同性传播。此时污染的传播方程比较简单：
 \begin{equation}
-\frac{\partial \rho}{\partial t} = \kappa  \Delta \rho\kappa  
+\frac{\partial \rho}{\partial t} = \kappa  \Delta \rho
 \end{equation}
 
-在模拟时，我们将$\kappa$设为0.2，这样我们就可以得到土壤中重金属含量随时间的变化图像。
+在模拟时，我们将$\kappa$设为0.2，并将模拟时长定为一年，
+经过对金属Cd的数值计算，我们就得到了土壤中重金属Cd含量随时间的变化图像。
+\begin{figure}[H]
+    \centerline{
+    \includegraphics[scale=0.5]{pictures/unpolluted.eps}}
+    \caption{去除污染源土壤变化图}
+    \label{fig:unpolluted}
+\end{figure}
+通过图像，我们可以看出，去除污染源后的效果非常明显。
+在原来的重金属高污染区，重金属的含量大大降低。
+这说明让高污染的工厂降低污染排放量或者停产是迅速降低土壤重金属污染的有效手段。
 \subsection{维持污染源的城市土壤变化}
 为了进行对比，我们假设所有的污染源依然不断地产生重金属污染，从而可以看出消除污染源之后对于该城区土壤重金属含量的影响。
 对于不是污染源的地区，其满足的微分方程与上一小节的方程相同。
@@ -585,12 +591,22 @@ x=\nu+AF+\epsilon
  \frac{\partial \rho}{\partial t}= \Delta \rho * \kappa + \beta
 \end{equation}
 作为估计，我们将$\beta$设为0.03，这是由于在上面确定污染源时，计算得出的污染源的重金属产生速率大致在0.03附近。
-我们以观测数据为起点，模拟了该城区一年的
+我们以观测数据为起点，模拟了该城区一年的土壤重金属Cd含量变化。结果如图所示\ref{fig:pollution-without-height}
+\begin{figure}[H]
+    \centerline{
+    \includegraphics[scale=0.5]{pictures/pollution-without-height.eps}}
+    \caption{维持污染源城市土壤变化}
+    \label{fig:pollution-without-height}
+\end{figure}
+\indent 结合完全去除污染源的模拟结果，可以发现因为污染源的持续排放重金属污染物，
+使得该城区的总体的土壤重金属含量不断上升。重金属含量较高区域的面积也不断增大。
+通过这个模拟结果，我们认为减少污染源重金属的排放对于土壤重金属的治理至关重要。
+我们必须防止像我们模拟出的这种重金属污染不断扩大的现象发生。
 \subsection{考虑高度影响的城市土壤变化}
 城市的地形高度并不是一成不变的，事实上，城市的地形其实十分复杂。下面是该城区的地形示意图：
-\begin{figure}
-    \centering 
-    \includegraphics[scale=0.8]{pictures/height.eps}
+\begin{figure}[H]
+    \centerline{
+    \includegraphics[scale=0.8]{pictures/height.eps}}
     \caption{城市地形示意图}
     \label{fig:height}
 \end{figure}
@@ -600,26 +616,26 @@ x=\nu+AF+\epsilon
 \end{equation}
 我们认为，由地势造成的扩散系数较小,为0.002,$\kappa$的大小与前面保持相同，仍为0.2。
 
-在模拟中，我们选择对金属Cd进行模拟，这是因为Cd的污染源分布既有比较分散的污染源，还有相对集中的污染源。
+在模拟中，我们同样选择对金属Cd进行模拟，这是因为Cd的污染源分布既有比较分散的污染源，还有相对集中的污染源。
 这样对于Cd进行模拟，我们既能够看出每个污染源对于其周围的土壤产生的影响，还能够观察到不同污染源相互作用后对土壤造成的污染。
 经过模拟，我们得到如图\ref{fig:pollution-with-hight}所示的结果：
-\begin{figure}
-    %\centering 
-    \flushleft
-    \includegraphics[scale=0.5]{pictures/pollution-with-hight-Cd.eps}
+\begin{figure}[H]
+    \centerline{
+    \includegraphics[scale=0.5]{pictures/pollution-with-height-Cd.eps}}
     \caption{城市土壤变化情况}
     \label{fig:pollution-with-hight}
 \end{figure}
-可以看出
+可以看出,整体来说，整个城市的土壤重金属污染程度在不断增加。
+对比不考虑高度时的情形，可以发现在左下角以及右下角有一些区别。
+通过比较我们得出地势的影响会使得重金属污染向低地势的地区汇集速度加快。
 \subsection{三种模型的结果比较}
 分别分析了以上三种模型，接下来我们来考察一下经过一段时间后，三种不同方案对于城市土壤变化的不同影响。
 并从中分析土壤治理中应该注意的问题。\\
 \indent 我们依然使用Cd作为模拟的重金属元素。我们将经过的时间设为一年。
 即比较采取不同的方案一年之后，城市土壤重金属的含量。经过MATLAB模拟后，我们得到图\ref{fig:different-model-comparison-of-Cd}。
-\begin{figure}
-    %\centering 
-    \flushleft
-    \includegraphics[scale=0.5]{pictures/different-model-comparison-of-Cd.eps}
+\begin{figure}[H]
+    \centerline{
+    \includegraphics[scale=0.5]{pictures/different-model-comparison-of-Cd.eps}}
     \caption{不同方案的比较}
     \label{fig:different-model-comparison-of-Cd}
 \end{figure}
@@ -645,10 +661,11 @@ x=\nu+AF+\epsilon
 \end{itemize}
 \part{模型的完善}
 在实际的土壤环境中，由于空气氧化，土壤中发生的化学发应以及微生物对于重金属污染的降解作用，土壤在一定的重金属污染范围内是具有自我净化功能的。
-所以作为模型的完善，我们可以考虑土壤的重金属降解速率$\gamma$。从而得到重金属的降解模型
-土壤中重金属的来源是多途径的，首先是成土母质本身含有重金属，不同的母质、成土过程所形成的土壤含有重金属量差异很大。
+所以作为模型的完善，我们可以考虑土壤的重金属降解速率$\gamma$。从而得到重金属的降解模型。 \\
+\indent 此外土壤中重金属的来源是多途径的，首先是成土母质本身含有重金属，不同的母质、成土过程所形成的土壤含有重金属量差异很大。
 此外，人类工农业生产活动，也造成重金属对大气、水体和土壤的污染，而大气和水体中的重金属又会反过来对土壤的污染造成影响。
 在前面的建模过程中，我们仅仅只考虑了土壤和地势对于重金属传播的影响，而没有考虑水体以及空气的因素。
+所以下面还对水体及空气建立了重金属传播模型，以完善我们的模拟。
 \section{重金属降解模型}
 在这一节中，我们考察重金属在土壤中的降解对于模型的修正。
 这一部分的背景资料我们参考了 \cite{art:jiangjie} 。
@@ -820,9 +837,6 @@ $$ \frac{\partial \rho}{\partial t} + \nabla(\textbf{v} \cdot \rho) = \kappa \De
 % - 重金属降解模型
 % 
 % - 建议
-
-
-
 
 \printbibliography
 \end{document}
